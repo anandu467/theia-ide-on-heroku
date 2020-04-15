@@ -29,7 +29,7 @@ WORKDIR /home/theia
 ADD package.json ./package.json
 
 RUN ls && \
-     yarn theia build ; \
+    yarn theia build && \
     yarn theia download:plugins
 EXPOSE $PORT
 ENV SHELL=/bin/bash \
