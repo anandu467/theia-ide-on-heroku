@@ -25,7 +25,6 @@
         "@theia/preferences": "latest",
         "@theia/preview": "latest",
         "@theia/search-in-workspace": "latest",
-        "@theia/terminal": "next",
         "@theia/preferences": "next",
         "@theia/messages": "next",
         "@theia/preview": "next",
