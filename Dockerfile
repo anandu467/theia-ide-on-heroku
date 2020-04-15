@@ -57,7 +57,7 @@ WORKDIR /home/theia
 ADD package.json ./package.json
 
 RUN sudo yarn --cache-folder ./ycache && sudo rm -rf ./ycache
-RUN NODE_OPTIONS="--max_old_space_size=8192" sudo yarn theia build
+RUN NODE_OPTIONS="--max_old_space_size=3000" sudo yarn theia build
 
 # ------------------------------------------------------------
 # Expose the port that the app will run on
