@@ -31,7 +31,7 @@ RUN mkdir -p /home/theia \
 WORKDIR /home/theia
 
 
-ADD $version.package.json ./package.json
+ADD package.json ./package.json
 
 RUN yarn --cache-folder ./ycache && rm -rf ./ycache && \
      NODE_OPTIONS="--max_old_space_size=4096" yarn theia build ; \
