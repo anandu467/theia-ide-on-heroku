@@ -1,66 +1,42 @@
-# ------------------------------------------------------------
-# Start with Ubuntu Bionic Beaver
-# ------------------------------------------------------------
+ARG NODE_VERSION=10
+FROM node:${NODE_VERSION}
 
-FROM ubuntu:18.04
+# Install Python 3 from source
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y make build-essential libssl-dev \
+    && apt-get install -y libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+    && apt-get install -y libncurses5-dev  libncursesw5-dev xz-utils tk-dev \
+    && wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz \
+    && tar xvf Python-3.7.0.tgz \
+    && cd Python-3.7.0 \
+    && ./configure \
+    && make -j8 \
+    && make install
 
-# ------------------------------------------------------------
-# Install the curl, xz-utils, wget, git, sudo and build-essential packages
-# ------------------------------------------------------------
-# https://packages.ubuntu.com/bionic/curl
-# https://packages.ubuntu.com/bionic/xz-utils
-# https://packages.ubuntu.com/bionic/wget
-# https://packages.ubuntu.com/bionic/git
-# https://packages.ubuntu.com/bionic/sudo
-# https://packages.ubuntu.com/bionic/build-essential
+RUN apt-get update \
+    && apt-get install -y python-dev python-pip \
+    && pip install --upgrade pip --user \
+    && apt-get install -y python3-dev python3-pip \
+    && pip3 install --upgrade pip --user \
+    && pip install python-language-server flake8 autopep8 \
+    && apt-get install -y yarn \
+    && apt-get clean \
+    && rm -rf /var/cache/apt/* \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /tmp/*
 
-RUN apt-get update && apt-get -y install curl xz-utils wget git sudo build-essential
-
-# ------------------------------------------------------------
-# Install Node v10
-# ------------------------------------------------------------
-
-RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-RUN sudo apt-get install -y nodejs
-
-# ------------------------------------------------------------
-# Install Yarn
-# ------------------------------------------------------------
-
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-
-RUN sudo apt update && sudo apt install yarn
-
-# ------------------------------------------------------------
-# Install Python language support
-# ------------------------------------------------------------
-
-RUN apt-get update && apt-get install -y python python-pip
-RUN pip install python-language-server
-
-# ------------------------------------------------------------
-# Install Ruby language support
-# ------------------------------------------------------------
-
-RUN apt-get -y install ruby ruby-dev zlib1g-dev
-RUN gem install solargraph
-
-# ------------------------------------------------------------
-# Build the app
-# ------------------------------------------------------------
-
-RUN mkdir -p /home/project && mkdir -p /home/theia
-
+RUN mkdir -p /home/theia \
+    && mkdir -p /home/project
 WORKDIR /home/theia
 
-ADD package.json ./package.json
 
-RUN sudo yarn --cache-folder ./ycache && sudo rm -rf ./ycache
-RUN NODE_OPTIONS="--max_old_space_size=3000" sudo yarn theia build
+ADD $version.package.json ./package.json
 
-# ------------------------------------------------------------
-# Expose the port that the app will run on
-# ------------------------------------------------------------
-
+RUN yarn --cache-folder ./ycache && rm -rf ./ycache && \
+     NODE_OPTIONS="--max_old_space_size=4096" yarn theia build ; \
+    yarn theia download:plugins
 EXPOSE $PORT
+ENV SHELL=/bin/bash \
+    THEIA_DEFAULT_PLUGINS=local-dir:/home/theia/plugins
+ENTRYPOINT [ "yarn", "theia", "start", "/home/project", "--hostname=0.0.0.0" ]
