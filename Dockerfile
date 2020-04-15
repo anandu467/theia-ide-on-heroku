@@ -7,12 +7,7 @@ RUN apt-get update \
     && apt-get install -y make build-essential libssl-dev \
     && apt-get install -y libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
     && apt-get install -y libncurses5-dev  libncursesw5-dev xz-utils tk-dev \
-    && wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz \
-    && tar xvf Python-3.7.0.tgz \
-    && cd Python-3.7.0 \
-    && ./configure \
-    && make -j8 \
-    && make install
+    && apt-get install python python3
 
 RUN apt-get update \
     && apt-get install -y python-dev python-pip \
@@ -33,8 +28,8 @@ WORKDIR /home/theia
 
 ADD package.json ./package.json
 
-RUN yarn --cache-folder ./ycache && rm -rf ./ycache && \
-     NODE_OPTIONS="--max_old_space_size=4096" yarn theia build ; \
+RUN ls && \
+     yarn theia build ; \
     yarn theia download:plugins
 EXPOSE $PORT
 ENV SHELL=/bin/bash \
