@@ -33,7 +33,7 @@
         "@theia/search-in-workspace": "next",
         "@theia/json": "next",
         "@theia/textmate-grammars": "next",
-        "@theia/mini-browser": "next"
+        "@theia/mini-browser": "next",
         "@theia/terminal": "latest",
         "@theia/vsx-registry": "latest"
     },
