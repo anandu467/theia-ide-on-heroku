@@ -25,6 +25,16 @@
         "@theia/preferences": "latest",
         "@theia/preview": "latest",
         "@theia/search-in-workspace": "latest",
+        "@theia/terminal": "next",
+        "@theia/preferences": "next",
+        "@theia/messages": "next",
+        "@theia/preview": "next",
+        "@theia/callhierarchy": "next",
+        "@theia/merge-conflicts": "next",
+        "@theia/search-in-workspace": "next",
+        "@theia/json": "next",
+        "@theia/textmate-grammars": "next",
+        "@theia/mini-browser": "next"
         "@theia/terminal": "latest",
         "@theia/vsx-registry": "latest"
     },
